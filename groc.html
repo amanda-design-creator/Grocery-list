@@ -1,0 +1,651 @@
+<html>
+<head>
+    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Grocery List</title>
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Family Grocery List">
+    <meta property="og:description" content="Simple family grocery list manager with separate lists for each family member">
+    <meta property="og:type" content="website">
+    
+    <!-- Mobile optimized -->
+    <meta name="theme-color" content="#22c55e">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .tutu-name {
+            color: #FFD700;
+        }
+
+        .doiti-name {
+            color: #FFD700; 
+        }
+
+        .ammi-name {
+            color: #FFD700;
+        }
+
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #cb9cd4 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            color: #2d3748; 
+            line-height: 1.6; }
+
+        .header {
+            background: rgba(234, 193, 224, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(215, 30, 30, 0.2);
+            padding: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .person-card {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .person-card:hover {
+            transform: scale(1.05);
+        }
+
+        .person-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #460449;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .homepage {
+                flex-direction: column;
+                height:auto;
+                margin-top: 2rem;
+            }
+        }
+
+        .homepage {
+            padding-top: 50px;
+            display: flex;
+            justify-content: center;  /* horizontal center */
+            align-items: center;      /* vertical center */
+            gap: 2rem;
+            height: 80vh; 
+            margin-top: 0;            /* or 100vh for full viewport height */
+        }
+
+        .homepage-header {
+            text-align: center;
+            margin-bottom: 30px; /* space between heading and pictures */
+            font-size: 3rem;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            background:#023e07;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: #30044d;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background: #987681;
+            color: #334155;
+        }
+
+        .nav-btn.active {
+            background:#420345;
+            color: white;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-form {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .add-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .add-input:focus {
+            border-color: #a87ddc90;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .add-btn {
+            padding: 0.75rem 1.5rem;
+            background:#9b6c9b;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(139, 48, 164, 0.3);
+        }
+
+        .add-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(114, 32, 115, 0.4);
+        }
+
+        .add-btn:disabled {
+            background: #565256;
+            cursor: not-allowed;
+        }
+
+        .items-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #f3f8f3;
+        }
+
+        .section-header.checked {
+            color: #f3f8f3;
+        }
+
+        .section-header.have {
+            color: #f3f8f3;
+        }
+
+        .item {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .item.checked {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.05));
+            border-left: 4px solid #02103179;
+            box-shadow: 0 4px 20px rgba(12, 4, 71, 0.2);
+        }
+
+        .item.have {
+            background: linear-gradient(135deg, rgba(148, 163, 184, 0.1), rgba(100, 116, 139, 0.05));
+            border-left: 4px solid #3e3f40;
+            box-shadow: 0 4px 20px rgba(148, 163, 184, 0.2);
+        }
+
+        .status-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #d1d5db;
+            border-radius: 50%;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .status-btn.checked {
+            background: #e0ad05;
+            border-color: #5f670d;
+            color: white;
+        }
+
+        .status-btn.have {
+            background: #0747a1;
+            border-color: #062550;
+            color: white;
+        }
+
+        .item-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .item-name.checked {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+
+        .delete-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            color: #6e0e0e;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #0c0c0c;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1f2937;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-buttons {
+                margin-left: 0;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .add-form {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header with navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="m1 1 4 4 13 2 2 3H7a3 3 0 0 0 0 6h11"></path>
+                </svg>
+                <h2>Family Groceries🍇</h2>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-section="Home">
+                    🏡Home
+                </button>
+                <button class="nav-btn" data-section="Tutu">
+                    🌙Tutu
+                </button>
+                <button class="nav-btn" data-section="Doiti">
+                    💩Doiti
+                </button>
+                <button class="nav-btn" data-section="Ammi">
+                    👑Ammi
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="homeSection" class="homepage" style="display: flex; flex-direction: column; align-items: center; gap: 2rem; margin-top: 3rem;">
+        <h1 class="homepage-header">The Grocery Galaxy!🚀</h1>
+        <div style="display: flex; justify-content: center; gap: 2rem;">
+            <div class="person-card" onclick="openSection('Tutu')">
+            <img src="tutu.jpg" alt="Tutu" class="person-img">
+            <p class="person-name tutu-name">🌙 Tutu</p>
+        </div>
+
+        <div class="person-card" onclick="openSection('Doiti')">
+            <img src="doiti.jpg" alt="Doiti" class="person-img">
+            <p class="person-name doiti-name">💩 Doiti</p>
+        </div>
+
+        <div class="person-card" onclick="openSection('Ammi')">
+            <img src="ammi.jpg" alt="Ammi" class="person-img">
+            <p class="person-name ammi-name">👑 Ammi</p>
+        </div>
+
+        </div>
+    </div>
+    <!-- Main content -->
+    <main class="container" id="mainContent">
+        <h1 class="section-title" id="sectionTitle">Groceries</h1>
+        
+        <!-- Add new item form -->
+        <div class="add-form">
+            <input type="text" class="add-input" id="itemInput" placeholder="Add a grocery item..." maxlength="100">
+            <button class="add-btn" id="addBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14m-7-7v14"></path>
+                </svg>
+                Add
+            </button>
+        </div>
+
+        <!-- Want items section -->
+        <div class="items-section" id="wantSection" style="display: none;">
+            <h2 class="section-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; margin-right: 8px;">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27,6.96 12,12.01 20.73,6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                Want to Buy
+            </h2>
+            <div id="wantItems"></div>
+        </div>
+
+        <!-- Checked items section -->
+        <div class="items-section" id="checkedSection" style="display: none;">
+            <h2 class="section-header checked">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; margin-right: 8px;">
+                    <path d="M9 12l2 2 4-4"></path>
+                    <path d="M21 12c.552 0 1-.448 1-1V5c0-.552-.448-1-1-1H3c-.552 0-1 .448-1 1v6c0 .552.448 1 1 1h18z"></path>
+                </svg>
+                Checked Off
+            </h2>
+            <div id="checkedItems"></div>
+        </div>
+
+        <!-- Have items section -->
+        <div class="items-section" id="haveSection" style="display: none;">
+            <h2 class="section-header have">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; margin-right: 8px;">
+                    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8z"></path>
+                    <path d="m3.3 7 8.7 5 8.7-5"></path>
+                    <path d="m12 22-5-3V9l5 3 5-3v10l-5 3z"></path>
+                </svg>
+                Already Have
+            </h2>
+            <div id="haveItems"></div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="emptyState">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.5;">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="m1 1 4 4 13 2 2 3H7a3 3 0 0 0 0 6h11"></path>
+            </svg>
+            <p>No grocery items yet. Add some above!</p>
+        </div>
+    </main>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Store items for each section
+        const items = {
+            Home: [],
+            Tutu: [],
+            Doiti: [],
+            Ammi: []
+        };
+
+        let currentSection = "Home"; // Default section
+        document.getElementById("mainContent").style.display="none";
+        const navButtons = document.querySelectorAll(".nav-btn");
+        const sectionTitle = document.getElementById("sectionTitle");
+        const itemInput = document.getElementById("itemInput");
+        const addBtn = document.getElementById("addBtn");
+        const wantSection = document.getElementById("wantSection");
+        const checkedSection = document.getElementById("checkedSection");
+        const haveSection = document.getElementById("haveSection");
+        const wantItems = document.getElementById("wantItems");
+        const checkedItems = document.getElementById("checkedItems");
+        const haveItems = document.getElementById("haveItems");
+        const emptyState = document.getElementById("emptyState");
+        const toast = document.getElementById("toast");
+
+        function openSection(sectionName) {
+            currentSection = sectionName;
+
+            // Update active button
+            navButtons.forEach((b) => b.classList.toggle("active", b.dataset.section === sectionName));
+
+            // Hide homepage, show main content
+            document.getElementById("homeSection").style.display = "none";
+            document.getElementById("mainContent").style.display = "block";
+
+            // Update section title with emoji
+            const emoji = sectionEmojis[sectionName] || "";
+            sectionTitle.textContent = `${emoji} ${sectionName}'s Grocery List`;
+
+            renderItems();
+        }
+
+
+        // Disable add button initially ✅
+        addBtn.disabled = true;
+
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.className = `toast ${isError ? "error" : ""} show`;
+            setTimeout(() => toast.className = "toast", 3000);
+        }
+
+        function renderItems() {
+            const sectionItems = items[currentSection];
+            wantItems.innerHTML = "";
+            checkedItems.innerHTML = "";
+            haveItems.innerHTML = "";
+
+            sectionItems.forEach((item, index) => {
+                const itemElement = document.createElement("div");
+                itemElement.className = `item ${item.status}`;
+                itemElement.innerHTML = `
+                    <button class="status-btn ${item.status}" onclick="changeStatus(${index})">${item.status === "checked" ? "✓" : item.status === "have" ? "✓✓" : ""}</button>
+                    <span class="item-name ${item.status}">${item.name}</span>
+                    <button class="delete-btn" onclick="deleteItem(${index})">🗑</button>
+                `;
+
+                if (item.status === "checked") {
+                    checkedItems.appendChild(itemElement);
+                } else if (item.status === "have") {
+                    haveItems.appendChild(itemElement);
+                } else {
+                    wantItems.appendChild(itemElement);
+                }
+            });
+
+            // Show/hide sections
+            wantSection.style.display = wantItems.children.length ? "block" : "none";
+            checkedSection.style.display = checkedItems.children.length ? "block" : "none";
+            haveSection.style.display = haveItems.children.length ? "block" : "none";
+            emptyState.style.display = sectionItems.length ? "none" : "block";
+        }
+
+        function addItem() {
+            const name = itemInput.value.trim();
+            if (!name) {
+                showToast("Please enter an item name", true);
+                return;
+            }
+
+            items[currentSection].push({ name, status: "want" });
+            itemInput.value = "";
+            addBtn.disabled = true;
+            renderItems();
+            showToast("Item added successfully");
+        }
+
+        function changeStatus(index) {
+            const sectionItems = items[currentSection];
+            if (sectionItems[index].status === "want") {
+                sectionItems[index].status = "checked";
+            } else if (sectionItems[index].status === "checked") {
+                sectionItems[index].status = "have";
+            } else {
+                sectionItems[index].status = "want";
+            }
+            renderItems();
+        }
+
+        function deleteItem(index) {
+            items[currentSection].splice(index, 1);
+            renderItems();
+            showToast("Item deleted");
+        }
+
+        // ✅ Expose functions globally
+        window.changeStatus = changeStatus;
+        window.deleteItem = deleteItem;
+
+        // Event listeners
+        addBtn.addEventListener("click", addItem);
+        itemInput.addEventListener("input", () => {
+            addBtn.disabled = !itemInput.value.trim();
+        });
+        itemInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter" && !addBtn.disabled) {
+                addItem();
+            }
+        });
+
+        const sectionEmojis={
+            Home:"🏡",
+            Tutu:"🌙",
+            Doiti:"💩",
+            Ammi:"👑",
+        }
+
+        navButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                navButtons.forEach((b) => b.classList.remove("active"));
+                btn.classList.add("active");
+                currentSection = btn.dataset.section;
+                const emoji=sectionEmojis[currentSection] || "";
+                sectionTitle.textContent = `${emoji}${currentSection}'s Grocery List`;
+                if (currentSection === "Home") {
+                    document.getElementById("mainContent").style.display = "none";
+                    document.getElementById("homeSection").style.display = "flex";
+                } else {
+                document.getElementById("mainContent").style.display = "block";
+                document.getElementById("homeSection").style.display = "none";
+                renderItems();
+                }
+                });
+        });
+
+        renderItems();
+        
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker Registered'));
+        }
+
+    </script>
+</body>
+</html>
